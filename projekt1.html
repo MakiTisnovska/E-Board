@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ZPC Portfolio — P01: Rozměrová přesnost a funkční uložení při FDM 3D tisku.">
+    <title>P01 | 3D tisk — ZPC Portfolio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&family=Orbitron:wght@600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="ZPC-web3.css">
+    <link rel="stylesheet" href="projekt01.css">
+
+    <!-- Spolehlivé načtení Three.js a OrbitControls pro 3D prohlížeč -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+
+    <main class="container p01-container">
+        <header class="project-header">
+            <div class="brand-row">
+                <a class="brand" href="index.html"><span class="brand-mark">//</span> ZPC <span>PORTFOLIO</span></a>
+
+            </div>
+
+            <div class="project-heading">
+                <div class="project-heading-copy">
+                    <div class="project-kicker"><span>P01 </span>/ 3D TISK</div>
+                    <h1>3D MODELOVÁNÍ<br><em>FDM 3D TISK</em></h1>
+                    <p>Ověření rozměrů vytištěného šestihranného čepu a funkčního uložení testovacích kroužků.</p>
+                </div>
+                <!-- ILUSTRAČNÍ OBRÁZEK 3D TISKU VPRAVO -->
+                <div class="header-illustration">
+                    <img src="obrázky/3d_tisk.svg" alt="3D Tisk Ilustrace">
+                </div>
+            </div>
+
+            <!-- ROZTAŽENÁ NAVIGACE SE ŠIKMÝMI DĚLIČI -->
+            <div class="nav-full-slant-wrapper">
+                <nav class="nav-full-slant" aria-label="Navigace stránek">
+                    <a href="index.html"><b>00</b> HLAVNÍ STRÁNKA</a>
+                    <a href="about.html"><b>01</b> O MNĚ</a>
+                    <a href="projekt.html" class="current" aria-current="page"><b>P01</b> 3D TISK</a>
+                    <a href="project02.html"><b>P02</b> WEBOVÁ TVORBA</a>
+                    <a href="project03.html"><b>P03</b> MIKROKONTROLÉR</a>
+                    <a href="projectk04.html"><b>P04</b> LASER A VINYL</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="intro-grid">
+            <div class="intro-text">
+                <div class="section-label"><span>01</span> / ZADÁNÍ A CÍL</div>
+                <h2>Co se ověřovalo?</h2>
+                <p>Cílem úlohy bylo zjistit, jak se při FDM tisku liší skutečné rozměry od rozměrů v CAD modelu a jak
+                    orientace tisku ovlivňuje výsledné uložení součástí.</p>
+                <p>Nejprve bylo vytištěno testovací těleso se šestihrannými pruty ve třech orientacích. Následně se
+                    tiskly kroužky s různými rozměry otvoru a ověřovala se jejich vůle při nasazení na jednotlivé pruty.
+                </p>
+            </div>
+            <div class="parameters">
+                <div class="section-label"><span>PARAMETRY</span> / TISK TESTOVACÍHO TĚLESA</div>
+                <dl>
+                    <div>
+                        <dt>Tiskárna</dt>
+                        <dd>MK3S</dd>
+                    </div>
+                    <div>
+                        <dt>Materiál</dt>
+                        <dd>PETG</dd>
+                    </div>
+                    <div>
+                        <dt>Výška vrstvy</dt>
+                        <dd>0,25 mm</dd>
+                    </div>
+                    <div>
+                        <dt>Jmenovitý rozměr</dt>
+                        <dd>15 mm</dd>
+                    </div>
+                    <div>
+                        <dt>Doba tisku</dt>
+                        <dd>85 min</dd>
+                    </div>
+                    <div>
+                        <dt>Množství materiálu</dt>
+                        <dd>14,72 g</dd>
+                    </div>
+                    <div>
+                        <dt>Výplň</dt>
+                        <dd>Mřížka, 15 %</dd>
+                    </div>
+                    <div>
+                        <dt>Podpěry</dt>
+                        <dd>Mřížka (Grid)</dd>
+                    </div>
+                    <div>
+                        <dt>Datum</dt>
+                        <dd>24. 9. 2026</dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- 3D MODELOVÉ TĚLESO (AUTOMATICKÉ ZOBRAZENÍ) -->
+        <section class="content-section" id="model">
+            <div class="section-title-row">
+                <div>
+                    <div class="section-label"><span>02</span> / 3D MODEL</div>
+                    <h2>Interaktivní prohlížení testovacího tělesa</h2>
+                </div>
+            </div>
+            <div class="viewer-clean">
+                <canvas id="canvas-3d"></canvas>
+                <div id="model-status" role="status" aria-live="polite">Načítání 3D modelu…</div>
+            </div>
+        </section>
+
+        <section class="content-section" id="mereni">
+            <div class="section-title-row">
+                <div>
+                    <div class="section-label"><span>03</span> / VÝSLEDKY MĚŘENÍ</div>
+                    <h2>Rozměry vytištěných prutů</h2>
+                </div>
+            </div>
+            <p class="section-lead">Jmenovitý rozměr byl 15 mm. V tabulce jsou uvedena tři měření každého prutu, jejich
+                průměr a odchylka od jmenovité hodnoty.</p>
+
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orientace prutu</th>
+                            <th>Měření 1</th>
+                            <th>Měření 2</th>
+                            <th>Měření 3</th>
+                            <th>Průměr</th>
+                            <th>Odchylka</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Svislý</td>
+                            <td>14,61 mm</td>
+                            <td>14,81 mm</td>
+                            <td>14,75 mm</td>
+                            <td><strong>14,72 mm</strong></td>
+                            <td>−0,28 mm</td>
+                        </tr>
+                        <tr>
+                            <td>Šikmý 45°</td>
+                            <td>14,78 mm</td>
+                            <td>14,72 mm</td>
+                            <td>14,74 mm</td>
+                            <td><strong>14,74 mm</strong></td>
+                            <td>−0,26 mm</td>
+                        </tr>
+                        <tr>
+                            <td>Vodorovný</td>
+                            <td>14,83 mm</td>
+                            <td>14,79 mm</td>
+                            <td>14,72 mm</td>
+                            <td><strong>14,78 mm</strong></td>
+                            <td>−0,22 mm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- VZORCE JAKO ZLOMKY -->
+            <div style="margin-top: 25px;">
+                <div class="section-label">POUŽITÉ VZORCE A MATEMATICKÉ VZTAHY</div>
+                <div class="math-box">
+                    <div class="formula-line">
+                        <span>Úbytek průměru: </span>
+                        <strong style="color: var(--accent, #ff6e00);">U<sub>D</sub></strong> =
+                        <div class="frac"><span class="num">D − D<sub>m</sub></span><span class="den">D</span></div>
+                        · 100 &nbsp;[%]
+                    </div>
+
+                    <div class="formula-line">
+                        <span>Úbytek materiálu: </span>
+                        <strong style="color: var(--accent, #ff6e00);">U<sub>M</sub></strong> =
+                        (1 − <div class="frac"><span class="num">D<sub>m</sub><sup>2</sup></span><span
+                                class="den">D<sup>2</sup></span></div>)
+                        · 100 &nbsp;[%]
+                    </div>
+
+                    <div class="formula-line">
+                        <span>Průměr opsané kružnice: </span>
+                        <strong style="color: var(--accent, #ff6e00);">D<sub>op</sub></strong> =
+                        <div class="frac"><span class="num">s</span><span class="den">cos 30°</span></div>
+                        =
+                        <div class="frac"><span class="num">2</span><span class="den">√3</span></div>
+                        · s
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-pair">
+                <article class="result-card">
+                    <h3>Úbytek průměru a materiálu</h3>
+                    <div class="table-scroll">
+                        <table class="small-table">
+                            <thead>
+                                <tr>
+                                    <th>Orientace</th>
+                                    <th>Úbytek průměru</th>
+                                    <th>Úbytek materiálu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Svislý</td>
+                                    <td>1,87 %</td>
+                                    <td>3,70 %</td>
+                                </tr>
+                                <tr>
+                                    <td>Šikmý 45°</td>
+                                    <td>1,73 %</td>
+                                    <td>3,44 %</td>
+                                </tr>
+                                <tr>
+                                    <td>Vodorovný</td>
+                                    <td>1,47 %</td>
+                                    <td>2,91 %</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="result-card">
+                    <h3>Kontrola šestihranného průřezu</h3>
+                    <div class="table-scroll">
+                        <table class="small-table">
+                            <thead>
+                                <tr>
+                                    <th>Orientace</th>
+                                    <th>Strana s</th>
+                                    <th>Přepočtený průměr</th>
+                                    <th>Odchylka</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Svislý</td>
+                                    <td>13,00 mm</td>
+                                    <td>15,01 mm</td>
+                                    <td>+0,01 mm</td>
+                                </tr>
+                                <tr>
+                                    <td>Šikmý 45°</td>
+                                    <td>12,96 mm</td>
+                                    <td>14,97 mm</td>
+                                    <td>−0,03 mm</td>
+                                </tr>
+                                <tr>
+                                    <td>Vodorovný</td>
+                                    <td>12,98 mm</td>
+                                    <td>14,99 mm</td>
+                                    <td>−0,01 mm</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="explanation">
+                <strong>Proč se naměřené hodnoty liší?</strong>
+                <p>Šestihranný průřez má ostré vnější rohy, které nelze kvůli tloušťce tiskové trysky vytisknout zcela
+                    přesně do špičky. Měření přes protilehlé vrcholy proto vykazuje větší odchylku. Kontrola vzdálenosti
+                    rovnoběžných stran a její přepočet ukázaly odchylky pouze −0,03 až +0,01 mm.</p>
+            </aside>
+        </section>
+
+        <section class="content-section" id="iterace">
+            <div class="section-title-row">
+                <div>
+                    <div class="section-label"><span>04</span> / OVĚŘENÍ ULOŽENÍ</div>
+                    <h2>Iterační tisk kroužků</h2>
+                </div>
+
+            </div>
+            <p class="section-lead">U každé orientace bylo vytištěno osm kroužků s různým rozměrem v CAD modelu. Po
+                vytištění se změřil skutečný vnitřní rozměr a zaznamenala se funkce uložení.</p>
+
+
+            <details class="iteration-group" open>
+                <summary><span><b>Svislý prut</b><small>8 zkušebních
+                            kroužků</small></span></summary>
+                <div class="table-scroll">
+                    <table class="iteration-table">
+                        <thead>
+                            <tr>
+                                <th>Iterace</th>
+                                <th>Datum</th>
+                                <th>Rozměr CAD</th>
+                                <th>Skutečný rozměr</th>
+                                <th>Uložení</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>29. 9. 2026</td>
+                                <td>15,00 mm</td>
+                                <td>14,93 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>29. 9. 2026</td>
+                                <td>15,25 mm</td>
+                                <td>15,19 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>30. 9. 2026</td>
+                                <td>14,95 mm</td>
+                                <td>14,68 mm</td>
+                                <td>Velmi těsné uložení</td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>4</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,00 mm</strong></td>
+                                <td>14,72 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">TĚSNÉ ULOŽENÍ</strong></td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>5</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,05 mm</strong></td>
+                                <td>14,75 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">MÍRNÁ VŮLE</strong></td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,10 mm</td>
+                                <td>14,81 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,15 mm</td>
+                                <td>14,83 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,20 mm</td>
+                                <td>14,91 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <details class="iteration-group" open>
+                <summary><span><b>Šikmý prut 45°</b><small>8 zkušebních
+                            kroužků</small></span></summary>
+                <div class="table-scroll">
+                    <table class="iteration-table">
+                        <thead>
+                            <tr>
+                                <th>Iterace</th>
+                                <th>Datum</th>
+                                <th>Rozměr CAD</th>
+                                <th>Skutečný rozměr</th>
+                                <th>Uložení</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>29. 9. 2026</td>
+                                <td>15,00 mm</td>
+                                <td>14,93 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,25 mm</td>
+                                <td>15,19 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>30. 9. 2026</td>
+                                <td>14,95 mm</td>
+                                <td>14,68 mm</td>
+                                <td>Těsné uložení</td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>4</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,00 mm</strong></td>
+                                <td>14,72 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">TĚSNÉ ULOŽENÍ</strong></td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>5</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,05 mm</strong></td>
+                                <td>14,75 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">MÍRNÁ VŮLE</strong></td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,10 mm</td>
+                                <td>14,81 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,15 mm</td>
+                                <td>14,83 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,20 mm</td>
+                                <td>14,91 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <details class="iteration-group" open>
+                <summary><span><b>Vodorovný prut</b><small>8 zkušebních
+                            kroužků</small></span></summary>
+                <div class="table-scroll">
+                    <table class="iteration-table">
+                        <thead>
+                            <tr>
+                                <th>Iterace</th>
+                                <th>Datum</th>
+                                <th>Rozměr CAD</th>
+                                <th>Skutečný rozměr</th>
+                                <th>Uložení</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>29. 9. 2026</td>
+                                <td>15,00 mm</td>
+                                <td>14,93 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>29. 9. 2026</td>
+                                <td>15,25 mm</td>
+                                <td>15,19 mm</td>
+                                <td>Velká vůle</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>30. 9. 2026</td>
+                                <td>14,95 mm</td>
+                                <td>14,68 mm</td>
+                                <td>Příliš těsné uložení</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,00 mm</td>
+                                <td>14,72 mm</td>
+                                <td>Příliš těsné uložení</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>30. 9. 2026</td>
+                                <td>15,05 mm</td>
+                                <td>14,75 mm</td>
+                                <td>Velmi těsné</td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>6</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,10 mm</strong></td>
+                                <td>14,81 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">TĚSNÉ ULOŽENÍ</strong></td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>7</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,15 mm</strong></td>
+                                <td>14,83 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">TĚSNÉ ULOŽENÍ</strong></td>
+                            </tr>
+                            <tr style="background: rgba(255,121,0,0.12);">
+                                <td><strong>8</strong></td>
+                                <td>30. 9. 2026</td>
+                                <td><strong>15,20 mm</strong></td>
+                                <td>14,91 mm</td>
+                                <td><strong style="color: var(--accent, #ff6e00);">MÍRNÁ VŮLE</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </section>
+
+        <section class="content-section conclusion-section" id="zaver">
+            <div class="section-title-row">
+                <div>
+                    <div class="section-label"><span>05</span> / VYHODNOCENÍ</div>
+                    <h2>Co z měření vyplynulo</h2>
+                </div>
+            </div>
+            <div class="conclusion-columns">
+                <article>
+                    <h3>Svislý a šikmý prut</h3>
+                    <p>Obě orientace vykazovaly velmi podobné chování. Funkční uložení bylo dosaženo při rozměru v CAD
+                        modelu přibližně 15,00–15,05 mm. Při větších rozměrech, zejména od 15,10 mm, vznikala příliš
+                        velká vůle.</p>
+                </article>
+                <article>
+                    <h3>Vodorovný prut</h3>
+                    <p>Vodorovný prut vykazoval větší odpor při nasazování kroužku. Rozměry 15,00–15,05 mm byly příliš
+                        těsné. Vhodnějšího uložení bylo dosaženo při rozměru 15,10–15,20 mm.</p>
+                </article>
+            </div>
+            <div class="recommendation">
+                <div>
+                    <div class="section-label"><span>DOPORUČENÍ Z PROTOKOLU</span></div>
+                    <h3>Korekce rozměru otvoru v CAD</h3>
+                    <p>Naměřený vnitřní rozměr kroužků byl oproti CAD modelu menší přibližně o 0,27–0,33 mm. Při návrhu
+                        je proto vhodné zohlednit technologickou odchylku FDM tisku.</p>
+                </div>
+                <div class="correction-values">
+                    <div><span>Svislý a šikmý prut 45°</span><strong>+0,05 až +0,10 mm</strong></div>
+                    <div><span>Vodorovný prut</span><strong>+0,15 až +0,20 mm</strong></div>
+                </div>
+            </div>
+        </section>
+
+            <div class="document-link">
+      <div><span class="section-label">PŮVODNÍ PODKLAD</span><strong>Laboratorní protokol č. 21</strong><small>Rozměrová přesnost a funkční uložení při FDM 3D tisku</small></div>
+      <a href="Laboratornih_protokol_3D_tisk.pdf" target="_blank" rel="noopener">OTEVŘÍT PROTOKOL ↗</a>
+    </div>
+
+        <footer class="page-footer">
+            <a href="index.html">← ZPĚT NA HLAVNÍ STRÁNKU</a>
+            <span>ZPC PORTFOLIO / PROJEKT P01</span>
+            <a href="project02.html">DALŠÍ PROJEKT →</a>
+        </footer>
+    </main>
+
+    <!-- 3D PROHLÍŽEČ STL -->
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const container = document.querySelector('.viewer-clean');
+        const canvas = document.getElementById('canvas-3d');
+        const status = document.getElementById('model-status');
+        if (!container || !canvas) return;
+
+        const setStatus = (message) => {
+            if (status) status.textContent = message;
+        };
+
+        if (!window.THREE || !THREE.STLLoader || !THREE.OrbitControls) {
+            setStatus('Nepodařilo se načíst Three.js knihovny. Zkontroluj připojení k internetu.');
+            console.error('Chybí Three.js, STLLoader nebo OrbitControls.');
+            return;
+        }
+
+        let renderer;
+        try {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x080503);
+
+            const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 5000);
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.06;
+            controls.screenSpacePanning = true;
+
+            scene.add(new THREE.HemisphereLight(0xffffff, 0x39302a, 1.6));
+            const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+            keyLight.position.set(100, 140, 120);
+            scene.add(keyLight);
+            const orangeLight = new THREE.DirectionalLight(0xff7900, 1.0);
+            orangeLight.position.set(-100, -40, -80);
+            scene.add(orangeLight);
+
+            const resize = () => {
+                const width = Math.max(container.clientWidth, 1);
+                const height = Math.max(container.clientHeight, 1);
+                renderer.setSize(width, height, false);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            };
+            resize();
+            window.addEventListener('resize', resize);
+            if ('ResizeObserver' in window) {
+                new ResizeObserver(resize).observe(container);
+            }
+
+            const loader = new THREE.STLLoader();
+            // STL je ve stejné složce jako tento HTML soubor.
+            loader.load(
+                './model.stl',
+                (geometry) => {
+                    geometry.computeVertexNormals();
+                    geometry.computeBoundingBox();
+                    geometry.center();
+
+                    const material = new THREE.MeshStandardMaterial({
+                        color: 0xcbd2dc,
+                        roughness: 0.42,
+                        metalness: 0.12
+                    });
+                    const model = new THREE.Mesh(geometry, material);
+                    scene.add(model);
+
+                    const box = new THREE.Box3().setFromObject(model);
+                    const size = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const fitDistance = (maxDim / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+                    camera.position.set(fitDistance * 1.25, fitDistance * 0.95, fitDistance * 1.35);
+                    camera.near = Math.max(maxDim / 1000, 0.01);
+                    camera.far = Math.max(maxDim * 100, 1000);
+                    camera.updateProjectionMatrix();
+                    controls.target.copy(center);
+                    controls.minDistance = maxDim * 0.35;
+                    controls.maxDistance = maxDim * 12;
+                    controls.update();
+                },
+                (xhr) => {
+                    if (xhr.lengthComputable) {
+                        setStatus(`Načítání modelu: ${Math.round(xhr.loaded / xhr.total * 100)} %`);
+                    }
+                },
+                (error) => {
+                    console.error('Chyba při načítání STL:', error);
+                }
+            );
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            };
+            animate();
+        } catch (error) {
+            console.error('Chyba 3D prohlížeče:', error);
+            setStatus('3D prohlížeč se nepodařilo spustit. Podrobnosti jsou v konzoli prohlížeče.');
+        }
+    });
+    </script>
+</body>
+
+</html>
