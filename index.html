@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JVC Portfolio — Jak vytvořit (téměř) cokoliv">
+    <title>ZPC | Portfolio</title>
+
+    <link rel="stylesheet" href="ZPC-web3.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Orbitron:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+
+    <main class="container" id="home">
+        <header>
+            <div class="header-main-flex">
+                <!-- Levá část s nadpisem -->
+                <div class="header-left">
+                    <h1>ZPC <span class="thin">PORTFOLIO</span></h1>
+                </div>
+
+                <!-- Pravá část s tlačítkem stejné výšky a tečkami -->
+                <div class="header-right">
+                    <div class="identity-row">
+                        <a href="about.html" class="identity-btn">
+                            <span class="glitch-mini" data-text="ACCESS_USER_PROFILE">
+                                ACCESS_USER_PROFILE
+                            </span>
+                            <div class="scanner-line"></div>
+                        </a>
+
+                        <button class="menu-trigger-btn" id="menu-trigger" aria-label="Otevřít systémové menu">
+                            <span class="dots-icon">⋮</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Podtitul a autor přímo pod hlavní lištou -->
+            <div class="header-info">
+                <p class="subtitle">Jak vytvořit (téměř) cokoliv</p>
+                <p class="subtitle author">Autor: <span id="author-name">Markéta Tišnovská</span></p>
+            </div>
+        </header>
+
+        <section class="final-project-zone">
+            <a href="final-project.html" class="card final-card">
+                <div class="final-badge">V1.0.0 RELEASED</div>
+                <img class="image" src="obrázky/electrolongboard.svg" alt="Electro Longboard">
+                <div class="final-content">
+                    <div class="text-wrap">
+                        <div class="eyebrow">FEATURED PROJECT // 00</div>
+                        <h2>FINAL PROJECT</h2>
+                        <p>Project name: Electro longboard <span class="divider">|</span> Code name: ElBord</p>
+                        <p class="dim">&gt; STATUS: DRIVING_IMPLEMENTED</p>
+                    </div>
+                    <div class="system-status">
+                        <span class="pulse-icon"></span>
+                        SYSTEM_ONLINE // FULLY_OPERATIONAL
+                    </div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill"></div>
+                </div>
+            </a>
+        </section>
+
+        <section id="project-grid" class="grid" aria-label="Mini projekty">
+            <a href="projekt1.html" class="card active">
+                <div class="card_decoding">SUCCESSFULLY_DECODED</div>
+                <div class="project-label">P01</div>
+                <div class="status-tag">ACCESS_GRANTED</div>
+                <img class="image_grid" src="obrázky/3d_tisk.svg" alt="3D modelování">
+                <h3>3D modelování a tisk</h3>
+                <p>Click to view project</p>
+            </a>
+
+            <a href="project02.html" class="card active">
+                <div class="card_decoding">SUCCESSFULLY_DECODED</div>
+                <div class="project-label">P02</div>
+                <div class="status-tag">ACCESS_GRANTED</div>
+                <img class="image_grid" src="obrázky/3d_tisk.svg" alt="Webová tvorba">
+                <h3>Webová tvorba</h3>
+                <p>Click to view project</p>
+            </a>
+
+            <a href="project03.html" class="card active">
+                <div class="card_decoding">SUCCESSFULLY_DECODED</div>
+                <div class="project-label">P03</div>
+                <div class="status-tag">ACCESS_GRANTED</div>
+                <img class="image_grid" src="obrázky/3d_tisk.svg" alt="Elektro - mikrokontroler">
+                <h3>Elektro - mikrokontroler</h3>
+                <p>Click to view project</p>
+            </a>
+
+            <a href="projectk04.html" class="card active">
+                <div class="card_decoding">SUCCESSFULLY_DECODED</div>
+                <div class="project-label">P04</div>
+                <div class="status-tag">ACCESS_GRANTED</div>
+                <img class="image_grid" src="obrázky/3d_tisk.svg" alt="Laser cutter">
+                <h3>Laser cutter a vinyl cutter</h3>
+                <p>Click to view project</p>
+            </a>
+        </section>
+
+        <footer>
+            <span>JVC_PORTFOLIO // 2026</span>
+            <span>BUILD <b>ONLINE</b></span>
+        </footer>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- HUD SYSTEM DRAWER (ROZBALOVACÍ PANEL) -->
+    <!-- ========================================== -->
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <aside class="system-drawer" id="system-drawer" aria-label="Systémové ovládání">
+        <div class="drawer-header">
+            <span class="drawer-title">// SYSTEM_CONTROL_PANEL</span>
+            <button class="close-drawer-btn" id="close-drawer" aria-label="Zavřít menu">[ ✕ ]</button>
+        </div>
+
+        <div class="drawer-body">
+            <!-- Navigace na všechny stránky -->
+            <div class="drawer-section">
+                <div class="section-label">01 // NAVIGACE A STRÁNKY</div>
+                <nav class="drawer-nav">
+                    <a href="index.html" class="nav-item active">&gt; 00_HOME</a>
+                    <a href="about.html" class="nav-item">&gt; 01_ABOUT_PROFILE</a>
+                    <a href="final-project.html" class="nav-item">&gt; 02_FINAL_PROJECT (ElBord)</a>
+                    <a href="projekt.html" class="nav-item">&gt; P01_3D_MODELOVANI</a>
+                    <a href="project02.html" class="nav-item">&gt; P02_WEBOVA_TVORBA</a>
+                    <a href="project03.html" class="nav-item">&gt; P03_MIKROKONTROLER</a>
+                    <a href="projectk04.html" class="nav-item">&gt; P04_LASER_A_VINYL</a>
+                </nav>
+            </div>
+
+            <!-- Nastavení systému: Téma a Jazyk -->
+            <div class="drawer-section">
+                <div class="section-label">02 // SYSTEM_SETTINGS</div>
+
+                <div class="setting-row">
+                    <span class="setting-title">UI_THEME</span>
+                    <div class="toggle-group" id="theme-toggle" role="group" aria-label="Přepínač tématu">
+                        <button class="toggle-btn active" data-theme="dark">DARK</button>
+                        <button class="toggle-btn" data-theme="light">LIGHT</button>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <span class="setting-title">LANGUAGE</span>
+                    <div class="toggle-group" id="lang-toggle" role="group" aria-label="Přepínač jazyka">
+                        <button class="toggle-btn active" data-lang="cs">CZ</button>
+                        <button class="toggle-btn" data-lang="en">EN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            STATUS: READY // LATENCY: 12ms
+        </div>
+    </aside>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
